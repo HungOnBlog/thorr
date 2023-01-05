@@ -1,7 +1,8 @@
 package models
 
 type ThorrOptions struct {
-	File string `json:"file"`
+	File   string `json:"file"`
+	Spawns int    `json:"spawns" default:"1"`
 }
 
 type Thorr struct {

@@ -48,15 +48,6 @@ func init() {
 				Aliases: []string{
 					"i",
 				},
-				Flags: []cli.Flag{
-					&cli.StringFlag{
-						Name:  "file",
-						Usage: "The path of the test suit file, or the directory of the test suit files.",
-						Aliases: []string{
-							"f",
-						},
-					},
-				},
 			},
 			{
 				Name:      "load",
@@ -65,23 +56,23 @@ func init() {
 				Aliases: []string{
 					"l",
 				},
-				Flags: []cli.Flag{
-					&cli.StringFlag{
-						Name:  "file",
-						Usage: "The path of the test suit file, or the directory of the test suit files.",
-						Aliases: []string{
-							"f",
-						},
-					},
-				},
 			},
 		},
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "file",
 				Usage: "The path of the test suit file, or the directory of the test suit files.",
+				Value: "",
 				Aliases: []string{
 					"f",
+				},
+			},
+			&cli.IntFlag{
+				Name:  "spawns",
+				Usage: "The number of spawns. Default 1, max 1000. Special value -1 Thorr will spawn the routine number equal to the number of test suits.",
+				Value: 1,
+				Aliases: []string{
+					"s",
 				},
 			},
 		},
