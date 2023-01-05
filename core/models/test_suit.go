@@ -10,14 +10,14 @@ type TestSuit struct {
 }
 
 type Test struct {
-	Name        string                 `json:"name"`
-	Description string                 `json:"description"`
-	Method      string                 `json:"method"`
-	Path        string                 `json:"path"`
-	Body        map[string]interface{} `json:"body"`
-	Headers     map[string]string      `json:"headers"`
-	Params      map[string]string      `json:"params"`
-	Expected    map[string]interface{} `json:"expected"`
+	Name        string      `json:"name"`
+	Description string      `json:"description"`
+	Method      string      `json:"method"`
+	Path        string      `json:"path"`
+	Body        interface{} `json:"body"`
+	Headers     interface{} `json:"headers"`
+	Params      interface{} `json:"params"`
+	Expected    interface{} `json:"expected"`
 }
 
 func MarshalTestSuit(testSuit TestSuit) ([]byte, error) {

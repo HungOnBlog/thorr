@@ -8,11 +8,23 @@
       "description": "Webapp index root path",
       "method": "GET",
       "path": "/",
-      "expect": {
+      "expected": {
         "status": 200,
         "body": {
             "message": "OK",
             "path": "/"
+        }
+      }
+    }, {
+      "name": "Index long",
+      "description": "Webapp index root path",
+      "method": "GET",
+      "path": "/long",
+      "expected": {
+        "status": 200,
+        "body": {
+            "message": "OK",
+            "path": "/long"
         }
       }
     }

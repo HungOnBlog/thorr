@@ -1,8 +1,11 @@
 package simplecli
 
 import (
+	"fmt"
 	"os"
 
+	"github.com/HungOnBlog/thorr/common/utils"
+	"github.com/HungOnBlog/thorr/core/models"
 	"github.com/urfave/cli/v2"
 )
 
@@ -13,6 +16,36 @@ type ThorrSimpleCli struct {
 var thorrSimpleCliApp *cli.App
 
 func thorrAction(c *cli.Context) error {
+	f := c.String("file")
+
+	if f == "" {
+		return cli.ShowAppHelp(c)
+	}
+
+	isFile := utils.IsFile(f)
+	var suits []models.TestSuit
+	if isFile {
+		content := utils.ReadJsonFile(f)
+		suit, err := models.UnmarshalTestSuit(content)
+		if err != nil {
+			return err
+		}
+
+		suits = append(suits, suit)
+	} else {
+		filePaths := utils.LoadAllFilePathsIn(f)
+		for _, filePath := range filePaths {
+			content := utils.ReadJsonFile(filePath)
+			suit, err := models.UnmarshalTestSuit(content)
+			if err != nil {
+				return err
+			}
+
+			suits = append(suits, suit)
+		}
+	}
+
+	fmt.Println(suits)
 	return nil
 }
 
