@@ -1,11 +1,8 @@
 package simplecli
 
 import (
-	"fmt"
 	"os"
 
-	"github.com/HungOnBlog/thorr/common/utils"
-	"github.com/HungOnBlog/thorr/core/models"
 	"github.com/urfave/cli/v2"
 )
 
@@ -15,38 +12,27 @@ type ThorrSimpleCli struct {
 
 var thorrSimpleCliApp *cli.App
 
-func thorrAction(c *cli.Context) error {
-	f := c.String("file")
+func integrationAction(c *cli.Context) error {
+	cli.ShowAppHelp(c)
+	return nil
+}
 
-	if f == "" {
+func loadAction(c *cli.Context) error {
+	cli.ShowAppHelp(c)
+	return nil
+}
+
+func thorrAction(c *cli.Context) error {
+	command := c.Command.Name
+
+	switch command {
+	case "integration":
+		return integrationAction(c)
+	case "load":
+		return loadAction(c)
+	default:
 		return cli.ShowAppHelp(c)
 	}
-
-	isFile := utils.IsFile(f)
-	var suits []models.TestSuit
-	if isFile {
-		content := utils.ReadJsonFile(f)
-		suit, err := models.UnmarshalTestSuit(content)
-		if err != nil {
-			return err
-		}
-
-		suits = append(suits, suit)
-	} else {
-		filePaths := utils.LoadAllFilePathsIn(f)
-		for _, filePath := range filePaths {
-			content := utils.ReadJsonFile(filePath)
-			suit, err := models.UnmarshalTestSuit(content)
-			if err != nil {
-				return err
-			}
-
-			suits = append(suits, suit)
-		}
-	}
-
-	fmt.Println(suits)
-	return nil
 }
 
 func init() {
@@ -54,6 +40,42 @@ func init() {
 		Name:      "thorr",
 		Usage:     "Thorr <=> no more writing test, integration and load testing tools 🌩️🌩️🌩️🌩️",
 		UsageText: "thorr [global options]",
+		Commands: []*cli.Command{
+			{
+				Name:      "integration",
+				Usage:     "Run integration test",
+				UsageText: "thorr integration [options]",
+				Aliases: []string{
+					"i",
+				},
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:  "file",
+						Usage: "The path of the test suit file, or the directory of the test suit files.",
+						Aliases: []string{
+							"f",
+						},
+					},
+				},
+			},
+			{
+				Name:      "load",
+				Usage:     "Run load test",
+				UsageText: "thorr load [options]",
+				Aliases: []string{
+					"l",
+				},
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:  "file",
+						Usage: "The path of the test suit file, or the directory of the test suit files.",
+						Aliases: []string{
+							"f",
+						},
+					},
+				},
+			},
+		},
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "file",
