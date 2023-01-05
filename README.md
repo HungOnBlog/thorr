@@ -27,8 +27,7 @@ go build -o thorr .
 All the test of Thorr are defined in a JSON file and will be put in "thorr" folder. By default, Thorr will look for all files named "*.json" in the "thorr" folder. You can also specify a different file (or folder) name by using the `-f` flag.
 
 ```json
-# Example of Thorr test configuration file
-# thorr/user.json
+// Example of a test file for user APIs
 {
   "name": "user",
   "description": "Test the user service",
