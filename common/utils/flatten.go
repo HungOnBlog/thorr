@@ -1,5 +1,7 @@
 package utils
 
+import "encoding/json"
+
 // FlattenJson flattens a json object
 // Example:
 //
@@ -31,4 +33,10 @@ func flatten(flatObject map[string]interface{}, key string, value interface{}) {
 	default:
 		flatObject[key] = v
 	}
+}
+
+func JsonToMap(jsonString []byte) map[string]interface{} {
+	var result map[string]interface{}
+	json.Unmarshal(jsonString, &result)
+	return result
 }

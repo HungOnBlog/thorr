@@ -27,6 +27,106 @@
             "path": "/long"
         }
       }
+    }, {
+      "name": "Relay",
+      "description": "Webapp relay root path",
+      "method": "POST",
+      "path": "/relay",
+      "body": {
+        "number": 1
+      },
+      "expected": {
+        "status": 200,
+        "body": {
+            "message": "OK",
+            "path": "/relay",
+            "number": 1
+        }
+      }
+    }, {
+      "name": "Other relay",
+      "description": "Webapp relay root path",
+      "method": "POST",
+      "path": "/relay",
+      "body": {
+        "number": 3
+      },
+      "expected": {
+        "status": 200,
+        "body": {
+            "message": "OK",
+            "path": "/relay",
+            "number": 3
+        }
+      }
+    },{
+      "name": "Add",
+      "description": "Webapp add root path",
+      "method": "POST",
+      "path": "/add",
+      "body": {
+        "number": 1,
+        "adder": 1
+      },
+      "expected": {
+        "status": 200,
+        "body": {
+            "message": "OK",
+            "path": "/add",
+            "result": 2
+        }
+      }
+    },{
+      "name": "Add 1+2",
+      "description": "Webapp add root path",
+      "method": "POST",
+      "path": "/add",
+      "body": {
+        "number": 1,
+        "adder": 2
+      },
+      "expected": {
+        "status": 200,
+        "body": {
+            "message": "OK",
+            "path": "/add",
+            "result": 3
+        }
+      }
+    }, {
+      "name": "Update 1 -> 2",
+      "description": "Webapp update root path",
+      "method": "PUT",
+      "path": "/update",
+      "body": {
+        "number": 1,
+        "updater": 2
+      },
+      "expected": {
+        "status": 200,
+        "body": {
+            "message": "OK",
+            "path": "/update",
+            "result": 2
+        }
+      }
+    },{
+      "name": "Update 2 -> 3",
+      "description": "Webapp update root path",
+      "method": "PUT",
+      "path": "/update",
+      "body": {
+        "number": 2,
+        "updater": 3
+      },
+      "expected": {
+        "status": 200,
+        "body": {
+            "message": "OK",
+            "path": "/update",
+            "result": 3
+        }
+      }
     }
   ]
 }

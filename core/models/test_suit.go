@@ -4,6 +4,10 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"fmt"
+	"os"
+
+	"github.com/HungOnBlog/thorr/common/requester"
+	"github.com/HungOnBlog/thorr/common/utils"
 )
 
 type TestSuit struct {
@@ -20,6 +24,7 @@ type Test struct {
 	Name        string                 `json:"name"`
 	Description string                 `json:"description"`
 	Method      string                 `json:"method"`
+	BaseURL     string                 `json:"baseURL"`
 	Path        string                 `json:"path"`
 	Body        map[string]interface{} `json:"body" gorm:"type:jsonb;not null;default:'{}'::jsonb"`
 	Headers     map[string]interface{} `json:"headers" gorm:"type:jsonb;not null;default:'{}'::jsonb"`
@@ -57,6 +62,7 @@ func (t *TestSuit) Execute() error {
 	errors := make(chan error, numberOfTests)
 
 	for _, test := range t.Tests {
+		test.BaseURL = t.BaseURL
 		err := test.Execute()
 		if err != nil {
 			errors <- err
@@ -68,5 +74,42 @@ func (t *TestSuit) Execute() error {
 
 func (t *Test) Execute() error {
 	fmt.Println("Executing test: " + t.Name)
+	httpRequester := requester.NewHttpRequester()
+	status, body, err := httpRequester.Request(t.Method, t.BaseURL+t.Path, t.Headers, t.Params, t.Body)
+	if err != nil {
+		fmt.Println("Error: ", err)
+		return err
+	}
+	fmt.Fprintln(os.Stdout, "Status: ", status)
+	fmt.Fprintln(os.Stdout, "Body: ", utils.FlattenJson(utils.JsonToMap(body)))
+
+	isValid, err := t.validate(status, body)
+	if err != nil {
+		fmt.Println("Error: ", err)
+		return err
+	}
+
+	if !isValid {
+		fmt.Println("Test failed ☠️")
+	} else {
+		fmt.Println("Test passed ✅")
+	}
 	return nil
+}
+
+func (t *Test) validate(status int, body []byte) (bool, error) {
+	if t.Expected.Status != status {
+		return false, fmt.Errorf("expected status %d, got %d", t.Expected.Status, status)
+	}
+
+	flatResponseBody := utils.FlattenJson(utils.JsonToMap(body))
+	flatExpectedBody := utils.FlattenJson(t.Expected.Body)
+
+	for key, value := range flatExpectedBody {
+		if flatResponseBody[key] != value {
+			return false, fmt.Errorf("expected %s to be %s, got %s ❌", key, value, flatResponseBody[key])
+		}
+	}
+
+	return true, nil
 }
