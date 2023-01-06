@@ -1,9 +1,11 @@
 package utils
 
-import "io/ioutil"
+import (
+	"os"
+)
 
-func ReadJsonFile(path string) []byte {
-	content, err := ioutil.ReadFile(path)
+func ReadFile(path string) []byte {
+	content, err := os.ReadFile(path)
 	if err != nil {
 		return []byte{}
 	}

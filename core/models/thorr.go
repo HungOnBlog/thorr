@@ -70,7 +70,7 @@ func (t *Thorr) testFinder() (*[]TestSuit, error) {
 	var testSuits []TestSuit
 
 	if isFile {
-		content := utils.ReadJsonFile(path)
+		content := utils.ReadFile(path)
 
 		testSuit, err := UnmarshalTestSuit(content)
 		if err != nil {
@@ -81,7 +81,7 @@ func (t *Thorr) testFinder() (*[]TestSuit, error) {
 	} else {
 		files := utils.LoadAllFilePathsIn(path)
 		for _, file := range files {
-			content := utils.ReadJsonFile(file)
+			content := utils.ReadFile(file)
 
 			testSuit, err := UnmarshalTestSuit(content)
 			if err != nil {
