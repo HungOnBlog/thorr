@@ -55,7 +55,9 @@ All the test of Thorr are defined in a JSON file and will be put in "thorr" fold
 
 ## Road map
 
-- [x] Support GET, POST, PUT, PATCH, DELETE methods
+- [ ] Implement the integration test
+- [ ] Implement the load test
+- [ ] Support GET, POST, PUT, PATCH, DELETE methods
 - [ ] Add more assertions type (e.g. body contains, body not contains, body match regex, ...)
 - [ ] Add more test types (e.g. load test, ...)
 - [ ] Add more reporters (e.g. HTML, ...)
