@@ -5,6 +5,7 @@ import (
 
 	"github.com/HungOnBlog/thorr/core/models"
 	"github.com/HungOnBlog/thorr/infrastructure/requester"
+	"github.com/HungOnBlog/thorr/utils"
 )
 
 func main() {
@@ -18,7 +19,7 @@ func main() {
 				Description: "Test 1 Description",
 				Request: models.TestRequest{
 					BaseURL: "https://httpbin.org",
-					Path:    "/uuid",
+					Path:    "/anything/hello",
 					Method:  "GET",
 					Header:  map[string]interface{}{"Content-Type": "application/json"},
 				},
@@ -38,6 +39,9 @@ func main() {
 		}
 
 		fmt.Println(status)
-		fmt.Println(res)
+		flattenMap := utils.Flatten(res)
+		for k, v := range flattenMap {
+			fmt.Println(k, v)
+		}
 	}
 }
