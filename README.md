@@ -117,6 +117,7 @@ String advanced type assertion:
 - **string::uuid**: Check the value is a valid UUID
 - **string::url**: Check the value is a valid URL
 - **string::base64**: Check the value is a valid base64 string
+- **string::regex::regex**: Check the value matches the regex (e.g. `string::regex::^[a-z]+$`)
 
 Int advanced type assertion:
 
