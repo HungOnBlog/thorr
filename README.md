@@ -67,7 +67,7 @@ All the test of Thorr are defined in a JSON file and will be put in "thorr" fold
 
 ## Contributing
 
-I would love to see your ideas for Thorr. Please feel free to open an issue or a pull request or adding issues. 🥰🥰
+I would love to see your ideas for Thorr. Please feel free to open an issue or a pull request. 🥰🥰
 
 You should follow the [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) convention when writing commit messages.
 
