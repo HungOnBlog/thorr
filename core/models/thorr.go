@@ -61,6 +61,18 @@ func (t *Thorr) runIntegrationTests() error {
 }
 
 func (t *Thorr) runLoadTests() error {
+
+	suites, err := t.testFinder()
+	if err != nil {
+		return err
+	}
+
+	if len(*suites) == 0 {
+		return fmt.Errorf("no test suites found")
+	}
+
+	fmt.Println("Starting load tests", len(*suites))
+	fmt.Print("Suits: ", *suites)
 	return nil
 }
 

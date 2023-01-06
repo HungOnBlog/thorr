@@ -44,6 +44,21 @@ func integrationAction(c *cli.Context) error {
 }
 
 func loadAction(c *cli.Context) error {
+	file := c.String("file")
+	spawns := c.Int("spawns")
+
+	options := &models.ThorrOptions{
+		File:    file,
+		Spawns:  spawns,
+		Command: "load",
+	}
+
+	thorr := models.NewThorr(*options)
+	err := thorr.Start()
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

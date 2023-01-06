@@ -52,3 +52,15 @@ All the test of Thorr are defined in a JSON file and will be put in "thorr" fold
   ]
 }
 ```
+
+## Road map
+
+- [x] Support GET, POST, PUT, PATCH, DELETE methods
+- [ ] Add more assertions type (e.g. body contains, body not contains, body match regex, ...)
+- [ ] Add more test types (e.g. load test, ...)
+- [ ] Add more reporters (e.g. HTML, ...)
+- [ ] Add more test file formats (e.g. YAML, ...)
+- [ ] Add dynamic path (e.g. /user/:id) with customer resource loader (e.g. database, file, aws s3, ...)
+- [ ] Build Github Action for Thorr
+- [ ] Web UI for Thorr
+- [ ] Helm chart for Thorr

@@ -1,0 +1,91 @@
+{
+  "name": "Load test",
+  "description": "Load test",
+  "baseURL": "http://localhost:3000",
+  "config": {
+    "users": 100,
+    "spawnRate": 10,
+    "duration": -1
+  },
+  "tests": [
+    {
+      "name": "Load test",
+      "description": "Load test",
+      "method": "GET",
+      "path": "/",
+      "assertions": [
+        {
+          "type": "status",
+          "value": 200
+        },{
+          "type": "body",
+          "value": {
+            "message": "OK",
+            "path": "/"
+          }
+        }
+      ]
+    },{
+      "name": "Load test long",
+      "description": "Load test long",
+      "method": "GET",
+      "path": "/long",
+      "assertions": [
+        {
+          "type": "status",
+          "value": 200
+        },{
+          "type": "body",
+          "value": {
+            "message": "OK",
+            "path": "/long"
+          }
+        }
+      ]
+    },{
+      "name": "Load test add",
+      "description": "Load test add",
+      "method": "POST",
+      "path": "/add",
+      "body": {
+        "number": 1,
+        "adder": 2
+      },
+      "assertions": [
+        {
+          "type": "status",
+          "value": 200
+        },{
+          "type": "body",
+          "value": {
+            "message": "OK",
+            "path": "/add",
+            "result": 3
+          }
+        }
+      ]
+    },{
+      "name": "Load test update",
+      "description": "Load test update",
+      "method": "PUT",
+      "path": "/update",
+      "body": {
+        "number": 1,
+        "updater": 2
+      },
+      "assertions": [
+        {
+          "type": "status",
+          "value": 200
+        },{
+          "type": "body",
+          "value": {
+            "message": "OK",
+            "path": "/update",
+            "result": 3
+          }
+        }
+      ]
+    }
+  ]
+}
