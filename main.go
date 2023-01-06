@@ -1,11 +1,7 @@
 package main
 
-import (
-	simplecli "github.com/HungOnBlog/thorr/app/simple_cli"
-)
+import "fmt"
 
 func main() {
-	thorSimpleCli := &simplecli.ThorrSimpleCli{}
-	thorSimpleCli.New()
-	thorSimpleCli.Run()
+	fmt.Println("Hello World")
 }
