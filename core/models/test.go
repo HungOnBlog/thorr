@@ -9,6 +9,7 @@ type Test struct {
 
 type TestRequest struct {
 	BaseURL string                 `json:"baseURL"`
+	Path    string                 `json:"path"`
 	Method  string                 `json:"method" default:"GET"`
 	Header  map[string]interface{} `json:"header"`
 	Body    map[string]interface{} `json:"body"`

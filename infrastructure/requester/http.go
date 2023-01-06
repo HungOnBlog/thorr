@@ -12,7 +12,7 @@ type HttpRequester struct {
 
 func NewHttpRequester() *HttpRequester {
 	return &HttpRequester{
-		client: req.C().DevMode(),
+		client: req.C(),
 	}
 }
 
@@ -22,15 +22,15 @@ func (h *HttpRequester) requestBuilder(test models.Test) *req.Request {
 
 	switch test.Request.Method {
 	case "GET":
-		r = c.Get()
+		r = c.Get(test.Request.Path)
 	case "POST":
-		r = c.Post()
+		r = c.Post(test.Request.Path)
 	case "PUT":
-		r = c.Put()
+		r = c.Put(test.Request.Path)
 	case "DELETE":
-		r = c.Delete()
+		r = c.Delete(test.Request.Path)
 	default:
-		r = c.Get()
+		r = c.Get(test.Request.Path)
 	}
 
 	if test.Request.Header != nil {
