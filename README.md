@@ -6,8 +6,8 @@ Thorr is a simple, yet powerful, tool for doing integration test and load testin
 
 ## Key concepts
 
-- **[Test Suit](#test-suit) A test suit is a collection of tests. It is a JSON file that contains the test cases.
-- **[Test](#test-test-case) A test is a single test case. It contains the request and the assertions.
+- **[Test Suit](#test-suit)** A test suit is a collection of tests. It is a JSON file that contains the test cases.
+- **[Test](#test-test-case)** A test is a single test case. It contains the request and the assertions.
 
 ## Test suit
 
