@@ -8,6 +8,7 @@ Thorr is a simple, yet powerful, tool for doing integration test and load testin
 
 - **[Test Suit](#test-suit)** A test suit is a collection of tests. It is a JSON file that contains the test cases.
 - **[Test](#test-test-case)** A test is a single test case. It contains the request and the assertions.
+- **[Assertion](#assertions)**: An assertion is a condition that you want to check. It can be the status code, the response body, the response headers, ...
 
 ## Test suit
 
@@ -74,6 +75,22 @@ Test is a specific case (request) you want to test. It will be defined in the te
   ]
 }
 ```
+
+## Assertions
+
+Assertions are the conditions that you want to check. It can be the status code, the response body, the response headers, ...
+
+### Assertion `on`
+
+- **status_code**: Check the status code of the response
+- **body**: Check the body of the response
+- **headers**: Check the headers of the response
+
+### Assertion `check`
+
+- **exact**: Check the value is exactly the same as the expected value & type
+- **type**: Check the type of the value is the same as the expected type
+- **exist**: Check the value exists in the response
 
 ## Example of a test suit definition
 
