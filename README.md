@@ -64,3 +64,13 @@ All the test of Thorr are defined in a JSON file and will be put in "thorr" fold
 - [ ] Build Github Action for Thorr
 - [ ] Web UI for Thorr
 - [ ] Helm chart for Thorr
+
+## Contributing
+
+I would love to see your ideas for Thorr. Please feel free to open an issue or a pull request or adding issues. 🥰🥰
+
+You should follow the [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) convention when writing commit messages.
+
+## License
+
+Thorr is licensed under the MIT License. See [LICENSE](LICENSE) for the full license text.
