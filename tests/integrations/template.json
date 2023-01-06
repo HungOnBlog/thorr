@@ -1,0 +1,52 @@
+{
+  "name": "Test suit template",
+  "description": "This is a template for test suit. Tests in a in a suit are executed in sequence. If one test fails, it will be skipped and the next test will be executed.",
+  "type": "integration",
+  "base_url": "https://postman-echo.com",
+  "default_header": {
+    "Content-Type": "application/json"
+  },
+  "tests": [
+    {
+      "name": "Test name",
+      "description": "Test description",
+      "request": {
+        "method": "POST",
+        "path": "/",
+        "headers": {
+          "apikey": "apikey"
+        },
+        "queries": {
+          "key": "value"
+        },
+        "body": {
+          "key": "value",
+          "key2": 1
+        }
+      },
+      "assertions": [
+        {
+          "on": "status_code",
+          "check": "exact",
+          "expected": 200
+        },
+        {
+          "on": "body",
+          "check": "type",
+          "expected": {
+            "key": "string",
+            "key2": "string"
+          }
+        },
+        {
+          "on": "headers",
+          "check": "exist",
+          "expected": {
+            "apikey": true,
+            "Content-type": true
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -4,49 +4,71 @@
 
 Thorr is a simple, yet powerful, tool for doing integration test and load testing of HTTP APIs. It is written in Go and is designed to be easy to use and extend.
 
-## Installation
+## Key concepts
 
-### Download the binary
+- **[Test Suit](#test-suit) A test suit is a collection of tests. It is a JSON file that contains the test cases.
+- **[Test](#test-test-case) A test is a single test case. It contains the request and the assertions.
 
-```bash
-curl -L
-```
+## Test suit
 
-### Build from source
-
-```bash
-git clone https://github.com/HungOnBlog/thorr.git
-cd thorr
-go build -o thorr .
-```
-
-## Usage
-
-### Define a test
-
-All the test of Thorr are defined in a JSON file and will be put in "thorr" folder. By default, Thorr will look for all files named "*.json" in the "thorr" folder. You can also specify a different file (or folder) name by using the `-f` flag.
+Test suit is a collection of test cases. A test suit will be a JSON file that contains the test cases with the following format:
 
 ```json
-// Example of a test file for user APIs
 {
-  "name": "user",
-  "description": "Test the user service",
-  "baseURL": "http://localhost:8080",
-  "tests": [
+  "name": "Test suit name",
+  "description": "Test suit description",
+  "default": {
+    "base_url": "http://localhost:8080",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  },
+  "tests": [],
+}
+```
+
+## Test (Test case)
+
+Test is a specific case (request) you want to test. It will be defined in the test suit file with the following format:
+
+```json
+{
+  "name": "Test name",
+  "description": "Test description",
+  "request": {
+    "method": "POST",
+    "path": "/",
+    "headers": {
+      "apikey": "apikey"
+    },
+    "queries": {
+      "key": "value"
+    },
+    "body": {
+      "key": "value",
+      "key2": 1
+    }
+  },
+  "assertions": [
     {
-      "name": "Get user",
-      "description": "Get a user by id",
-      "method": "GET",
-      "path": "/user/:id",
-      "params": {
-        "id": "1"
-      },
-      "expect": {
-        "status": 200,
-        "body": {
-          "id": 1,
-          "name": "Hung"
-        }
+      "on": "status_code",
+      "check": "exact",
+      "expected": 200
+    },
+    {
+      "on": "body",
+      "check": "type",
+      "expected": {
+        "key": "string",
+        "key2": "string"
+      }
+    },
+    {
+      "on": "headers",
+      "check": "exist",
+      "expected": {
+        "apikey": true,
+        "Content-type": true
       }
     }
   ]
