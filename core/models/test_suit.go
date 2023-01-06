@@ -3,6 +3,7 @@ package models
 import (
 	"database/sql/driver"
 	"encoding/json"
+	"fmt"
 )
 
 type TestSuit struct {
@@ -10,6 +11,7 @@ type TestSuit struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	BaseURL     string `json:"baseURL"`
+	Tests       []Test `json:"tests"`
 }
 
 type Test struct {
@@ -46,4 +48,25 @@ func UnmarshalTestSuit(data []byte) (TestSuit, error) {
 	var testSuit TestSuit
 	err := json.Unmarshal(data, &testSuit)
 	return testSuit, err
+}
+
+func (t *TestSuit) Execute() error {
+	fmt.Println("Executing test suit: " + t.Name)
+	numberOfTests := len(t.Tests)
+	fmt.Println("Number of tests: ", numberOfTests)
+	errors := make(chan error, numberOfTests)
+
+	for _, test := range t.Tests {
+		err := test.Execute()
+		if err != nil {
+			errors <- err
+		}
+	}
+
+	return nil
+}
+
+func (t *Test) Execute() error {
+	fmt.Println("Executing test: " + t.Name)
+	return nil
 }
