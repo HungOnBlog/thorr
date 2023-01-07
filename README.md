@@ -104,8 +104,7 @@ For assertion `type` Thorr will automatically flatten nested object so you can a
 - **int**: Check the value is an integer
 - **double**: Check the value is a double
 - **boolean**: Check the value is a boolean
-- **date**: Check the value is a valid date (e.g. 2020-01-01)
-- **datetime**: Check the value is a valid datetime (e.g. 2020-01-01T00:00:00Z)
+- **date**: Check the value is a valid date (e.g. 2020-01-01, 2020-01-01T00:00:00)
 - **time**: Check the value is a valid time (e.g. 00:00:00)
 
 ##### Advanced
@@ -131,15 +130,18 @@ Double advanced type assertion:
 
 Date advanced type assertion:
 
-- **date::(lt|lte|gt|gte)::value**: Check the value is less than, less than or equal, greater than, greater than or equal to the value (e.g. `date::lt::2020-01-01`)
 - **date::(before|after)::value**: Check the value is before or after the value (e.g. `date::before::2020-01-01`)
 - **date::range::min to max**: Check the value is between min and max (e.g. `date::range::2020-01-01 to 2020-01-10`)
 - **date::format::format**: Check the value is in the format (e.g. `date::format::YYYY-MM-DD`)
-- **date::format::utc**: Check the value is in UTC format (e.g. `date::format::utc`)
+- **date::utc**: Check the value is in UTC format (e.g. `date::format::utc`)
+- **date::iso8601**: Check the value is in ISO8601 format (e.g. `date::iso8601`)
+
+The `utc` format is a shortcut for date time format of [RFC3339](https://tools.ietf.org/html/rfc3339) (e.g. `2006-01-02T15:04:05Z07:00`) But `Z` will be replaced by `+00:00` to make it compatible with Go time format.
+
+The `iso8601` format is a shortcut for date time format of [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) (e.g. `2006-01-02T15:04:05+07:00`)
 
 Time advanced type assertion:
 
-- **time::(lt|lte|gt|gte)::value**: Check the value is less than, less than or equal, greater than, greater than or equal to the value (e.g. `time::lt::00:00:00`)
 - **time::(before|after)::value**: Check the value is before or after the value (e.g. `time::before::00:00:00`)
 - **time::range::min to max**: Check the value is between min and max (e.g. `time::range::00:00:00 to 00:00:10`)
 - **time::format::format**: Check the value is in the format (e.g. `time::format::HH:mm:ss`)

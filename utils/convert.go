@@ -3,6 +3,8 @@ package utils
 import (
 	"encoding/json"
 	"io"
+	"strconv"
+	"time"
 )
 
 func MapStringInterfaceToMapStringString(m map[string]interface{}) map[string]string {
@@ -26,4 +28,89 @@ func ReadCloserToMapStringInterface(r io.ReadCloser) (map[string]interface{}, er
 	}
 
 	return data, nil
+}
+
+func InterfaceToString(value interface{}) string {
+	return value.(string)
+}
+
+func StringToInt(value string) int {
+	intValue, err := strconv.Atoi(value)
+	if err != nil {
+		return 0
+	}
+
+	return intValue
+}
+
+func StringToFloat(value string) float64 {
+	floatValue, err := strconv.ParseFloat(value, 64)
+	if err != nil {
+		return 0
+	}
+
+	return floatValue
+}
+
+func StringToDate(value string) (time.Time, error) {
+	dateValue, err := time.Parse("2006-01-02", value)
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	return dateValue, nil
+}
+
+func StringToDateWithFormat(value string, format string) (time.Time, error) {
+	dateValue, err := time.Parse(format, value)
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	return dateValue, nil
+}
+
+func StringToUTC(value string) (time.Time, error) {
+	dateValue, err := time.Parse(time.RFC3339, value)
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	return dateValue, nil
+}
+
+func StringToTime(value string) (time.Time, error) {
+	dateValue, err := time.Parse(time.RFC3339, value)
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	return dateValue, nil
+}
+
+func StringToTimeWithFormat(value string, format string) (time.Time, error) {
+	dateValue, err := time.Parse(format, value)
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	return dateValue, nil
+}
+
+func StringIso8601ToTime(value string) (time.Time, error) {
+	dateValue, err := time.Parse(time.RFC3339, value)
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	return dateValue, nil
+}
+
+func StringUnixToTime(value string) (time.Time, error) {
+	intValue, err := strconv.ParseInt(value, 10, 64)
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	return time.Unix(intValue, 0), nil
 }
