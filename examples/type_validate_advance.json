@@ -1,0 +1,40 @@
+{
+  "name":"Suit for advance type validation",
+  "description":"This is a suit for advance type validation",
+  "type": "integration",
+  "default": {
+    "base_url": "http://localhost:3000",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  },
+  "tests": [
+    {
+      "name": "Advance type validations",
+      "description": "This test will validate the advance type validations",
+      "request": {
+        "method": "GET",
+        "path":"/some_path"
+      },
+      "assertions": [
+        {
+          "on": "status_code",
+          "type": "exact",
+          "expected": 200
+        }, {
+          "on": "body",
+          "type": "type",
+          "expected": {
+            "id": "string::uuid",
+            "name": "string",
+            "email": "string::email",
+            "created_at": "date::iso8601",
+            "updated_at": "date::iso8601",
+            "info.email": "string::email",
+            "info.phone": "string::regex::^[0-9]{10}$"
+          }
+        }
+      ]
+    }
+  ]
+}

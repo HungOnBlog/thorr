@@ -281,6 +281,10 @@ The expected value is the value that you want to check. It can be a string, a nu
 }
 ```
 
+## Examples
+
+You can find some examples in the [examples](./examples/) folder.
+
 ## Road map
 
 - [ ] Implement the integration test
