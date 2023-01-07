@@ -104,8 +104,8 @@ For assertion `type` Thorr will automatically flatten nested object so you can a
 - **int**: Check the value is an integer
 - **double**: Check the value is a double
 - **boolean**: Check the value is a boolean
-- **date**: Check the value is a valid date (e.g. 2020-01-01, 2020-01-01T00:00:00)
-- **time**: Check the value is a valid time (e.g. 00:00:00)
+- **date**: Check the value is a valid date, format: `YYYY-MM-DD`
+- **time**: Check the value is a valid time, format: `HH:mm:ss`
 
 ##### Advanced
 
