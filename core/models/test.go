@@ -8,12 +8,13 @@ type Test struct {
 }
 
 type TestRequest struct {
-	BaseURL string                 `json:"baseURL"`
-	Path    string                 `json:"path"`
-	Method  string                 `json:"method" default:"GET"`
-	Header  map[string]interface{} `json:"header"`
-	Body    map[string]interface{} `json:"body"`
-	Query   map[string]interface{} `json:"query"`
+	BaseURL    string                 `json:"base_url"`
+	Path       string                 `json:"path"`
+	PathParams map[string]interface{} `json:"path_params"`
+	Method     string                 `json:"method" default:"GET"`
+	Header     map[string]interface{} `json:"header"`
+	Body       map[string]interface{} `json:"body"`
+	Query      map[string]interface{} `json:"query"`
 }
 
 type TestExpected struct {
