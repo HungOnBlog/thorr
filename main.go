@@ -1,20 +1,13 @@
 package main
 
 import (
-	"fmt"
-
-	"github.com/HungOnBlog/thorr/infrastructure/parser"
+	"github.com/HungOnBlog/thorr/infrastructure/cli"
 )
 
 func main() {
-	folderPath := "./tests/integrations"
-	dirParser := parser.NewDirParser()
-	suits, err := dirParser.Parse(folderPath)
+	cliApp := cli.NewThorCliApp()
+	err := cliApp.Run()
 	if err != nil {
 		panic(err)
-	}
-
-	for _, suit := range suits {
-		fmt.Println(suit)
 	}
 }
