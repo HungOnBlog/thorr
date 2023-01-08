@@ -32,5 +32,5 @@ tests:
       - on: headers
         check: exist
         expected:
-          - Content-Type: true
-          - apikey: true
+          Content-Type: true
+          apikey: true
