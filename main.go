@@ -7,12 +7,14 @@ import (
 )
 
 func main() {
-	filePath := "./tests/integrations/template.yaml"
-	parser := parser.NewYamlParser()
-	suit, err := parser.Parse(filePath)
+	folderPath := "./tests/integrations"
+	dirParser := parser.NewDirParser()
+	suits, err := dirParser.Parse(folderPath)
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(suit)
+	for _, suit := range suits {
+		fmt.Println(suit)
+	}
 }
