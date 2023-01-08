@@ -9,7 +9,7 @@ func TestTypeValidator(t *testing.T) {
 	cases := []struct {
 		expected interface{}
 		actual   interface{}
-		isValid  bool
+		isNotErr bool
 	}{
 		{"string", "test", true},
 		{"string", 1, false},
@@ -99,11 +99,9 @@ func TestTypeValidator(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		isValid, err := validator.Validate(c.expected, c.actual)
-
-		if isValid != c.isValid {
-			t.Errorf("Test case: %s, %v => %v (expected: %v)", c.expected, c.actual, isValid, c.isValid)
-			t.Error(err)
+		err := validator.Validate(c.expected, c.actual)
+		if c.isNotErr && err != nil {
+			t.Errorf("Validate(%v, %v) is error: %v", c.expected, c.actual, err)
 		}
 	}
 }

@@ -1,7 +1,7 @@
 package validators
 
 import (
-	"errors"
+	"fmt"
 	"time"
 
 	"github.com/HungOnBlog/thorr/utils"
@@ -32,7 +32,7 @@ func (t *TypeValidator) parseExpected(expected string) (string, string, string) 
 	return typeDef, command, value
 }
 
-func (t *TypeValidator) Validate(expected interface{}, actual interface{}) (bool, error) {
+func (t *TypeValidator) Validate(expected interface{}, actual interface{}) error {
 	expectedType, command, value := t.parseExpected(utils.InterfaceToString(expected))
 
 	switch expectedType {
@@ -49,17 +49,17 @@ func (t *TypeValidator) Validate(expected interface{}, actual interface{}) (bool
 	case "time":
 		return t.validateTime(command, value, actual)
 	default:
-		return false, errors.New("command is not supported")
+		return fmt.Errorf("type::%s is not supported", expectedType)
 	}
 }
 
-func (t *TypeValidator) validateString(command string, value string, actual interface{}) (bool, error) {
+func (t *TypeValidator) validateString(command string, value string, actual interface{}) error {
 	if !utils.IsString(actual) {
-		return false, nil
+		return fmt.Errorf("expected::string, got::%T", actual)
 	}
 
 	if command == "" {
-		return true, nil
+		return nil
 	}
 
 	switch command {
@@ -76,62 +76,92 @@ func (t *TypeValidator) validateString(command string, value string, actual inte
 	case "regex":
 		return t.validateRegex(value, actual)
 	default:
-		return false, errors.New("command is not supported")
+		return fmt.Errorf("command::%s is not supported", command)
 	}
 }
 
 // Validate email
 // Example: email::true
-func (t *TypeValidator) validateEmail(actual interface{}) (bool, error) {
+func (t *TypeValidator) validateEmail(actual interface{}) error {
 	emailRegex := `^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$`
-	return t.validateRegex(emailRegex, actual)
+	err := t.validateRegex(emailRegex, actual)
+	if err != nil {
+		return fmt.Errorf("expected::string::email, got::%v", actual)
+	}
+
+	return nil
 }
 
 // Validate length
 // Example: length::5-10
-func (t *TypeValidator) validateLength(value string, actual interface{}) (bool, error) {
+func (t *TypeValidator) validateLength(value string, actual interface{}) error {
 	length := len(utils.InterfaceToString(actual))
 	minMax := utils.SplitBy(value, "-")
 	min := utils.StringToInt(minMax[0])
 	max := utils.StringToInt(minMax[1])
 
-	return length >= min && length <= max, nil
+	isInRange := length >= min && length <= max
+	if !isInRange {
+		return fmt.Errorf("expected::string::length::%v, got::%v", value, length)
+	}
+
+	return nil
 }
 
 // Validate UUID
 // Example of UUID: 6ba7b810-9dad-11d1-80b4-00c04fd430c8
-func (t *TypeValidator) validateUUID(actual interface{}) (bool, error) {
+func (t *TypeValidator) validateUUID(actual interface{}) error {
 	uuidRegex := `^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`
-	return t.validateRegex(uuidRegex, actual)
+	err := t.validateRegex(uuidRegex, actual)
+	if err != nil {
+		return fmt.Errorf("expected::string::uuid, got::%v", actual)
+	}
+
+	return nil
 }
 
 // Validate URL
 // Example of URL: https://www.google.com
-func (t *TypeValidator) validateURL(actual interface{}) (bool, error) {
+func (t *TypeValidator) validateURL(actual interface{}) error {
 	urlRegex := `^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$`
-	return t.validateRegex(urlRegex, actual)
+	err := t.validateRegex(urlRegex, actual)
+	if err != nil {
+		return fmt.Errorf("expected::string::url, got::%v", actual)
+	}
+
+	return nil
 }
 
 // Validate base64
 // Example of base64: aGVsbG8gd29ybGQ=
-func (t *TypeValidator) validateBase64(actual interface{}) (bool, error) {
+func (t *TypeValidator) validateBase64(actual interface{}) error {
 	base64Regex := `^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$`
-	return t.validateRegex(base64Regex, actual)
+	err := t.validateRegex(base64Regex, actual)
+	if err != nil {
+		return fmt.Errorf("expected::string::base64, got::%v", actual)
+	}
+
+	return nil
 }
 
 // Validate regex
 // Example: regex::^[a-z]+$
-func (t *TypeValidator) validateRegex(regex string, actual interface{}) (bool, error) {
-	return utils.MatchRegex(regex, utils.InterfaceToString(actual)), nil
+func (t *TypeValidator) validateRegex(regex string, actual interface{}) error {
+	isMatch := utils.MatchRegex(regex, utils.InterfaceToString(actual))
+	if !isMatch {
+		return fmt.Errorf("expected::string::regex::%v, got::%v", regex, actual)
+	}
+
+	return nil
 }
 
-func (t *TypeValidator) validateInt(command string, value string, actual interface{}) (bool, error) {
+func (t *TypeValidator) validateInt(command string, value string, actual interface{}) error {
 	if !utils.IsInt(actual) {
-		return false, nil
+		return fmt.Errorf("expected::int, got::%T", actual)
 	}
 
 	if command == "" {
-		return true, nil
+		return nil
 	}
 
 	switch command {
@@ -146,46 +176,58 @@ func (t *TypeValidator) validateInt(command string, value string, actual interfa
 	case "gte":
 		return t.validateIntLogic("gte", value, actual)
 	default:
-		return false, errors.New("command is not supported")
+		return fmt.Errorf("command is not supported")
 	}
 }
 
 // Validate int range
 // Example: range::5-10
-func (t *TypeValidator) validateIntRange(value string, actual interface{}) (bool, error) {
+func (t *TypeValidator) validateIntRange(value string, actual interface{}) error {
 	minMax := utils.SplitBy(value, "-")
 	min := utils.StringToInt(minMax[0])
 	max := utils.StringToInt(minMax[1])
 
-	return actual.(int) >= min && actual.(int) <= max, nil
+	isInRange := actual.(int) >= min && actual.(int) <= max
+	if !isInRange {
+		return fmt.Errorf("expected::int::range::%v, got::%v", value, actual)
+	}
+
+	return nil
 }
 
 // Validate int logic
 // Example: lt::5
-func (t *TypeValidator) validateIntLogic(command string, value string, actual interface{}) (bool, error) {
+func (t *TypeValidator) validateIntLogic(command string, value string, actual interface{}) error {
 	compare := utils.StringToInt(value)
+	var isLogicPassed bool
 
 	switch command {
 	case "lt":
-		return actual.(int) < compare, nil
+		isLogicPassed = actual.(int) < compare
 	case "lte":
-		return actual.(int) <= compare, nil
+		isLogicPassed = actual.(int) <= compare
 	case "gt":
-		return actual.(int) > compare, nil
+		isLogicPassed = actual.(int) > compare
 	case "gte":
-		return actual.(int) >= compare, nil
+		isLogicPassed = actual.(int) >= compare
 	default:
-		return false, errors.New("command is not supported")
+		return fmt.Errorf("command is not supported")
 	}
+
+	if !isLogicPassed {
+		return fmt.Errorf("expected::int::%v::%v, got::%v", command, value, actual)
+	}
+
+	return nil
 }
 
-func (t *TypeValidator) validateFloat(command string, value string, actual interface{}) (bool, error) {
+func (t *TypeValidator) validateFloat(command string, value string, actual interface{}) error {
 	if !utils.IsFloat(actual) {
-		return false, nil
+		return fmt.Errorf("expected::float, got::%T", actual)
 	}
 
 	if command == "" {
-		return true, nil
+		return nil
 	}
 
 	switch command {
@@ -200,55 +242,67 @@ func (t *TypeValidator) validateFloat(command string, value string, actual inter
 	case "gte":
 		return t.validateFloatLogic("gte", value, actual)
 	default:
-		return false, errors.New("command is not supported")
+		return fmt.Errorf("command is not supported")
 	}
 }
 
 // Validate float range
 // Example: range::5.5-10.5
-func (t *TypeValidator) validateFloatRange(value string, actual interface{}) (bool, error) {
+func (t *TypeValidator) validateFloatRange(value string, actual interface{}) error {
 	minMax := utils.SplitBy(value, "-")
 	min := utils.StringToFloat(minMax[0])
 	max := utils.StringToFloat(minMax[1])
 
-	return actual.(float64) >= min && actual.(float64) <= max, nil
+	isInRange := actual.(float64) >= min && actual.(float64) <= max
+	if !isInRange {
+		return fmt.Errorf("expected::float::range::%v, got::%v", value, actual)
+	}
+
+	return nil
 }
 
 // Validate float logic
 // Example: lt::5.5
-func (t *TypeValidator) validateFloatLogic(command string, value string, actual interface{}) (bool, error) {
+func (t *TypeValidator) validateFloatLogic(command string, value string, actual interface{}) error {
 	compare := utils.StringToFloat(value)
+	var isLogicPassed bool
 
 	switch command {
 	case "lt":
-		return actual.(float64) < compare, nil
+		isLogicPassed = actual.(float64) < compare
 	case "lte":
-		return actual.(float64) <= compare, nil
+		isLogicPassed = actual.(float64) <= compare
 	case "gt":
-		return actual.(float64) > compare, nil
+		isLogicPassed = actual.(float64) > compare
 	case "gte":
-		return actual.(float64) >= compare, nil
+		isLogicPassed = actual.(float64) >= compare
 	default:
-		return false, errors.New("command is not supported")
+		return fmt.Errorf("command is not supported")
 	}
+
+	if !isLogicPassed {
+		return fmt.Errorf("expected::float::%v::%v, got::%v", command, value, actual)
+	}
+
+	return nil
 }
 
-func (t *TypeValidator) validateBool(command string, value string, actual interface{}) (bool, error) {
+func (t *TypeValidator) validateBool(command string, value string, actual interface{}) error {
 	if !utils.IsBool(actual) {
-		return false, nil
+		return fmt.Errorf("expected::bool, got::%T", actual)
 	}
 
-	return true, nil
+	return nil
 }
 
-func (t *TypeValidator) validateDate(command string, value string, actual interface{}) (bool, error) {
+func (t *TypeValidator) validateDate(command string, value string, actual interface{}) error {
 	if command == "" {
 		_, err := time.Parse("2006-01-02", utils.InterfaceToString(actual))
 		if err != nil {
-			return false, errors.New("invalid date format (YYYY-MM-DD)")
+			return fmt.Errorf("expected::date, got::%T default format is (yyyy-MM-dd)", actual)
 		}
 
-		return true, nil
+		return nil
 	}
 
 	switch command {
@@ -265,104 +319,125 @@ func (t *TypeValidator) validateDate(command string, value string, actual interf
 	case "iso8601":
 		return t.validateDateISO8601(actual)
 	default:
-		return false, errors.New("command is not supported")
+		return fmt.Errorf("command is not supported")
 	}
 }
 
 // Validate date before
 // Example: before::2018-01-01
-func (t *TypeValidator) validateDateBefore(value string, actual interface{}) (bool, error) {
+func (t *TypeValidator) validateDateBefore(value string, actual interface{}) error {
 	date, err := utils.StringToDate(value)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	actualDate, err := utils.StringToDate(utils.InterfaceToString(actual))
 	if err != nil {
-		return false, err
+		return err
 	}
-	return actualDate.Before(date), nil
+
+	isBefore := actualDate.Before(date)
+	if !isBefore {
+		return fmt.Errorf("expected::date::before::%v, got::%v", value, actual)
+	}
+
+	return nil
 }
 
 // Validate date after
 // Example: after::2018-01-01
-func (t *TypeValidator) validateDateAfter(value string, actual interface{}) (bool, error) {
+func (t *TypeValidator) validateDateAfter(value string, actual interface{}) error {
 	date, err := utils.StringToDate(value)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	actualDate, err := utils.StringToDate(utils.InterfaceToString(actual))
 	if err != nil {
-		return false, err
+		return err
 	}
-	return actualDate.After(date), nil
+
+	isAfter := actualDate.After(date)
+	if !isAfter {
+		return fmt.Errorf("expected::date::after::%v, got::%v", value, actual)
+	}
+
+	return nil
 }
 
 // Validate date range
 // Example: range::2018-01-01 to 2018-01-31
-func (t *TypeValidator) validateDateRange(value string, actual interface{}) (bool, error) {
+func (t *TypeValidator) validateDateRange(value string, actual interface{}) error {
 	dates := utils.SplitBy(value, "to")
 	from, err := utils.StringToDate(dates[0])
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	to, err := utils.StringToDate(dates[1])
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	actualDate, err := utils.StringToDate(utils.InterfaceToString(actual))
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	inRange := actualDate.After(from) && actualDate.Before(to)
 	onFrom := actualDate.Equal(from)
 	onTo := actualDate.Equal(to)
 
-	return inRange || onFrom || onTo, nil
+	isOnRange := inRange || onFrom || onTo
+	if !isOnRange {
+		return fmt.Errorf("expected::date::range::%v, got::%v", value, actual)
+	}
+
+	return nil
 }
 
 // Validate date format
 // Example: format::2023/01/31
-func (t *TypeValidator) validateDateFormat(format string, actual interface{}) (bool, error) {
+func (t *TypeValidator) validateDateFormat(format string, actual interface{}) error {
 	_, err := utils.StringToDateWithFormat(utils.InterfaceToString(actual), format)
-	return err == nil, err
+	if err != nil {
+		return fmt.Errorf("expected::date::format::%v, got::%v", format, actual)
+	}
+
+	return nil
 }
 
 // Validate date utc
 // Example UTC Date Format: 2018-01-01T00:00:00Z
 // Example UTC Date Format: 2018-01-01T00:00:00+00:00
 // Example UTC Date Format: 2018-01-01T00:00:00+0000
-func (t *TypeValidator) validateDateUTC(actual interface{}) (bool, error) {
+func (t *TypeValidator) validateDateUTC(actual interface{}) error {
 	_, err := utils.StringToUTC(utils.InterfaceToString(actual))
 	if err != nil {
-		return false, err
+		return fmt.Errorf("expected::date::utc, got::%v", actual)
 	}
 
-	return err == nil, err
+	return nil
 }
 
 // Validate date ISO8601
 // Example ISO8601 Date Format: 2018-01-01T00:00:00+00:00
-func (t *TypeValidator) validateDateISO8601(actual interface{}) (bool, error) {
+func (t *TypeValidator) validateDateISO8601(actual interface{}) error {
 	_, err := utils.StringIso8601ToTime(utils.InterfaceToString(actual))
 	if err != nil {
-		return false, err
+		return fmt.Errorf("expected::date::iso8601, got::%v", actual)
 	}
 
-	return err == nil, err
+	return nil
 }
 
-func (t *TypeValidator) validateTime(command string, value string, actual interface{}) (bool, error) {
+func (t *TypeValidator) validateTime(command string, value string, actual interface{}) error {
 	if !utils.IsTimeString(actual) {
-		return false, nil
+		return fmt.Errorf("expected::time, got::%T default format is HH:mm:ss", actual)
 	}
 
 	if command == "" {
-		return true, nil
+		return nil
 	}
 
 	switch command {
@@ -375,67 +450,90 @@ func (t *TypeValidator) validateTime(command string, value string, actual interf
 	case "format":
 		return t.validateTimeFormat(value, actual)
 	default:
-		return false, errors.New("command is not supported")
+		return fmt.Errorf("command is not supported")
 	}
 }
 
 // Validate time before
 // Example: before::12:00:00
-func (t *TypeValidator) validateTimeBefore(value string, actual interface{}) (bool, error) {
+func (t *TypeValidator) validateTimeBefore(value string, actual interface{}) error {
 	time, err := utils.StringToTime(value)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	actualTime, err := utils.StringToTime(utils.InterfaceToString(actual))
 	if err != nil {
-		return false, err
+		return err
 	}
 
-	return actualTime.Before(time), nil
+	isBefore := actualTime.Before(time)
+	if !isBefore {
+		return fmt.Errorf("expected::time::before::%v, got::%v", value, actual)
+	}
+
+	return nil
 }
 
 // Validate time after
 // Example: after::12:00:00
-func (t *TypeValidator) validateTimeAfter(value string, actual interface{}) (bool, error) {
+func (t *TypeValidator) validateTimeAfter(value string, actual interface{}) error {
 	time, err := utils.StringToTime(value)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	actualTime, err := utils.StringToTime(utils.InterfaceToString(actual))
 	if err != nil {
-		return false, err
+		return err
 	}
 
-	return actualTime.After(time), nil
+	isAfter := actualTime.After(time)
+	if !isAfter {
+		return fmt.Errorf("expected::time::after::%v, got::%v", value, actual)
+	}
+
+	return nil
 }
 
 // Validate time range
 // Example: range::12:00:00 to 13:00:00
-func (t *TypeValidator) validateTimeRange(value string, actual interface{}) (bool, error) {
+func (t *TypeValidator) validateTimeRange(value string, actual interface{}) error {
 	times := utils.SplitBy(value, "to")
 	from, err := utils.StringToTime(times[0])
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	to, err := utils.StringToTime(times[1])
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	actualTime, err := utils.StringToTime(utils.InterfaceToString(actual))
 	if err != nil {
-		return false, err
+		return err
 	}
 
-	return actualTime.After(from) && actualTime.Before(to), nil
+	isInRange := actualTime.After(from) && actualTime.Before(to)
+	onFrom := actualTime.Equal(from)
+	onTo := actualTime.Equal(to)
+
+	isOnRange := isInRange || onFrom || onTo
+	if !isOnRange {
+		return fmt.Errorf("expected::time::range::%v, got::%v", value, actual)
+	}
+
+	return nil
 }
 
 // Validate time format
 // Example: format::15:04:05
-func (t *TypeValidator) validateTimeFormat(format string, actual interface{}) (bool, error) {
+func (t *TypeValidator) validateTimeFormat(format string, actual interface{}) error {
 	_, err := utils.StringToTimeWithFormat(utils.InterfaceToString(actual), format)
-	return err == nil, err
+	if err != nil {
+		return fmt.Errorf("expected::time::format::%v, got::%v", format, actual)
+	}
+
+	return nil
 }

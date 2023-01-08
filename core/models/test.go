@@ -1,10 +1,10 @@
 package models
 
 type Test struct {
-	Name        string       `json:"name"`
-	Description string       `json:"description"`
-	Request     TestRequest  `json:"request"`
-	Expected    TestExpected `json:"expected"`
+	Name        string      `json:"name"`
+	Description string      `json:"description"`
+	Request     TestRequest `json:"request"`
+	Assertions  []Assertion `json:"assertions"`
 }
 
 type TestRequest struct {

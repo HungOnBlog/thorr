@@ -48,21 +48,25 @@ func (h *HttpRequester) requestBuilder(test models.Test) *req.Request {
 	return r
 }
 
-func (h *HttpRequester) DoRequest(test models.Test) (int, map[string]interface{}, error) {
+func (h *HttpRequester) DoRequest(test models.Test) (models.Result, error) {
 	r := h.requestBuilder(test)
-
 	resp := r.Do()
+
 	status := resp.GetStatusCode()
+
+	headers := utils.HttpHeaderToMapStringString(resp.Header)
+
 	body := resp.Body
-
-	if status != test.Expected.Status {
-		return status, nil, nil
-	}
-
 	returnBody, err := utils.ReadCloserToMapStringInterface(body)
 	if err != nil {
-		return status, nil, err
+		return models.Result{}, err
 	}
 
-	return status, returnBody, nil
+	result := models.Result{
+		Status:  status,
+		Headers: headers,
+		Body:    returnBody,
+	}
+
+	return result, nil
 }

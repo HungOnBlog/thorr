@@ -3,6 +3,7 @@ package utils
 import (
 	"encoding/json"
 	"io"
+	"net/http"
 	"strconv"
 	"time"
 )
@@ -113,4 +114,20 @@ func StringUnixToTime(value string) (time.Time, error) {
 	}
 
 	return time.Unix(intValue, 0), nil
+}
+
+func HttpHeaderToMapStringString(header http.Header) map[string]string {
+	newMap := make(map[string]string)
+	for k, v := range header {
+		newMap[k] = v[0]
+	}
+	return newMap
+}
+
+func MapStringStringToMapStringInterface(m map[string]string) map[string]interface{} {
+	newMap := make(map[string]interface{})
+	for k, v := range m {
+		newMap[k] = v
+	}
+	return newMap
 }

@@ -23,9 +23,12 @@ func main() {
 					Method:  "GET",
 					Header:  map[string]interface{}{"Content-Type": "application/json"},
 				},
-				Expected: models.TestExpected{
-					Status: 200,
-					Body:   map[string]interface{}{"name": "Hung"},
+				Assertions: []models.Assertion{
+					{
+						On:       "status",
+						Check:    "exact",
+						Expected: 200,
+					},
 				},
 			},
 		},
@@ -33,13 +36,13 @@ func main() {
 
 	httpRequester := requester.NewHttpRequester()
 	for _, test := range suit.Tests {
-		status, res, err := httpRequester.DoRequest(test)
+		result, err := httpRequester.DoRequest(test)
 		if err != nil {
 			panic(err)
 		}
 
-		fmt.Println(status)
-		flattenMap := utils.Flatten(res)
+		fmt.Println(result.Status)
+		flattenMap := utils.Flatten(result.Body.(map[string]interface{}))
 		for k, v := range flattenMap {
 			fmt.Println(k, v)
 		}
