@@ -13,3 +13,7 @@ type TestSuitDefault struct {
 	BaseURL string            `json:"base_url" yaml:"base_url"`
 	Headers map[string]string `json:"headers" yaml:"headers"`
 }
+
+func (t *TestSuit) Run() error {
+	return nil
+}
