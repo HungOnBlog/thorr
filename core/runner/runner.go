@@ -3,12 +3,19 @@ package runner
 import (
 	"fmt"
 
+	"github.com/HungOnBlog/thorr/core/executors"
 	"github.com/HungOnBlog/thorr/core/models"
 )
 
 type ThorRunner struct{}
 
+func NewThorRunner() *ThorRunner {
+	return &ThorRunner{}
+}
+
 func (r *ThorRunner) Run(spawn int, suits []models.TestSuit) error {
+	fmt.Println("Running suits with spawn: ", spawn)
+	fmt.Println("Number of suits: ", len(suits))
 	switch spawn {
 	case 1:
 		return r.runSequential(suits)
@@ -20,9 +27,10 @@ func (r *ThorRunner) Run(spawn int, suits []models.TestSuit) error {
 }
 
 func (r *ThorRunner) runSequential(suits []models.TestSuit) error {
+	var textSuitExecutor = executors.NewTestSuitExecutor()
 	for _, suit := range suits {
 		fmt.Println("Running suit: ", suit.Name)
-		err := suit.Run()
+		err := textSuitExecutor.Execute(&suit)
 		if err != nil {
 			fmt.Println("❌ Error: ", err)
 		}
@@ -36,8 +44,9 @@ func (r *ThorRunner) runParallel(suits []models.TestSuit) error {
 	err := make(chan error)
 	for _, suit := range suits {
 		go func(suit models.TestSuit) {
+			var textSuitExecutor = executors.NewTestSuitExecutor()
 			fmt.Println("Running suit: ", suit.Name)
-			err <- suit.Run()
+			err <- textSuitExecutor.Execute(&suit)
 		}(suit)
 	}
 
@@ -55,9 +64,10 @@ func (r *ThorRunner) runSpecific(suits []models.TestSuit, spawn int) error {
 	err := make(chan error)
 	for _, suits := range suitsSpawn {
 		go func(suits []models.TestSuit) {
+			var textSuitExecutor = executors.NewTestSuitExecutor()
 			for _, suit := range suits {
 				fmt.Println("Running suit: ", suit.Name)
-				err <- suit.Run()
+				err <- textSuitExecutor.Execute(&suit)
 			}
 		}(suits)
 	}

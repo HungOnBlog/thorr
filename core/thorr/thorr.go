@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/HungOnBlog/thorr/core/models"
+	"github.com/HungOnBlog/thorr/core/runner"
 	"github.com/HungOnBlog/thorr/infrastructure/parser"
 	"github.com/HungOnBlog/thorr/utils"
 )
@@ -72,8 +73,10 @@ func (t *ThorrApp) runIntegration() error {
 		return err
 	}
 
-	for _, testSuit := range testSuits {
-		fmt.Println(testSuit)
+	thorrRunner := runner.NewThorRunner()
+	err = thorrRunner.Run(t.Spawn, testSuits)
+	if err != nil {
+		return err
 	}
 
 	return nil

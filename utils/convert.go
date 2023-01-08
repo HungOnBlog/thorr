@@ -131,3 +131,7 @@ func MapStringStringToMapStringInterface(m map[string]string) map[string]interfa
 	}
 	return newMap
 }
+
+func InterfaceToFloat64(value interface{}) float64 {
+	return value.(float64)
+}

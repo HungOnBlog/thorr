@@ -1,0 +1,54 @@
+{
+  "name": "Agify API",
+  "description": "Agify API is a simple REST API that returns age and count predictions based on a person's name.",
+  "default": {
+    "base_url": "https://api.agify.io",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  },
+  "tests": [
+    {
+      "name": "Test get name",
+      "request": {
+        "method": "GET",
+        "path": "/",
+        "query": {
+          "name": "John"
+        }
+      },
+      "assertions": [
+        {
+          "on": "status_code",
+          "check": "exact",
+          "expected": 200
+        },
+        {
+          "on": "body",
+          "check": "type",
+          "expected": {
+            "name": "string",
+            "age": "float",
+            "count": "float"
+          }
+        }, 
+        {
+          "on": "body",
+          "check": "exist",
+          "expected": {
+            "name": true,
+            "age": true,
+            "count": true
+          }
+        },
+        {
+          "on": "body",
+          "check": "exact",
+          "expected": {
+            "name": "John"
+          }
+        }
+      ]
+    }
+  ]
+}

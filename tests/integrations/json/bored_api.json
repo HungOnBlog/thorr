@@ -1,0 +1,41 @@
+{
+  "name": "Test for bored API",
+  "description": "Simple test for bored API",
+  "type": "integration",
+  "default": {
+    "base_url": "https://www.boredapi.com/api",
+    "headers": {
+      "Content-type": "application/json"
+    }
+  },
+  "tests": [
+    {
+      "name": "Test Get activities",
+      "description": "Test get activities",
+      "request": {
+        "method": "GET",
+        "path": "/activity"
+      },
+      "assertions": [
+        {
+          "on": "status_code",
+          "check": "exact",
+          "expected": 200
+        },
+        {
+          "on": "body",
+          "check": "type",
+          "expected": {
+            "activity": "string",
+            "type": "string",
+            "participants": "float",
+            "price": "float",
+            "link": "string",
+            "key": "string",
+            "accessibility": "float"
+          }
+        }
+      ]
+    }
+  ]
+}

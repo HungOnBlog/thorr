@@ -15,7 +15,7 @@ type Assertion struct {
 
 func (a *Assertion) CheckAssertion(result Result) error {
 	switch a.On {
-	case "status":
+	case "status_code":
 		return a.checkStatus(result)
 	case "body":
 		return a.checkBody(result)
@@ -43,7 +43,7 @@ func (a *Assertion) checkStatusNot(status int, expected int) error {
 func (a *Assertion) checkStatus(result Result) error {
 	switch a.Check {
 	case "exact":
-		return a.checkStatusExact(result.Status, a.Expected.(int))
+		return a.checkStatusExact(result.Status, int(utils.InterfaceToFloat64(a.Expected)))
 	case "not":
 		return a.checkStatusNot(result.Status, a.Expected.(int))
 	default:
@@ -85,7 +85,7 @@ func (a *Assertion) checkBodyType(body interface{}) error {
 	for k, v := range expectedFlattenBody {
 		err := typeValidator.Validate(v, actualFlattenBody[k])
 		if err != nil {
-			errs = append(errs, err)
+			errs = append(errs, fmt.Errorf("key::%s %s ;", k, err.Error()))
 		}
 	}
 
