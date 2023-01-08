@@ -1,23 +1,18 @@
 package models
 
 type Test struct {
-	Name        string      `json:"name"`
-	Description string      `json:"description"`
-	Request     TestRequest `json:"request"`
-	Assertions  []Assertion `json:"assertions"`
+	Name        string      `json:"name" yaml:"name"`
+	Description string      `json:"description" yaml:"description"`
+	Request     TestRequest `json:"request" yaml:"request"`
+	Assertions  []Assertion `json:"assertions" yaml:"assertions"`
 }
 
 type TestRequest struct {
-	BaseURL    string                 `json:"base_url"`
-	Path       string                 `json:"path"`
-	PathParams map[string]interface{} `json:"path_params"`
-	Method     string                 `json:"method" default:"GET"`
-	Header     map[string]interface{} `json:"header"`
-	Body       map[string]interface{} `json:"body"`
-	Query      map[string]interface{} `json:"query"`
-}
-
-type TestExpected struct {
-	Status int                    `json:"status"` // 200, 404, etc
-	Body   map[string]interface{} `json:"body"`
+	BaseURL    string                 `json:"base_url" yaml:"base_url"`
+	Path       string                 `json:"path" yaml:"path"`
+	PathParams map[string]interface{} `json:"path_params" yaml:"path_params"`
+	Method     string                 `json:"method" default:"GET" yaml:"method"`
+	Header     map[string]interface{} `json:"header" yaml:"header"`
+	Body       map[string]interface{} `json:"body" yaml:"body"`
+	Query      map[string]interface{} `json:"query" yaml:"query"`
 }

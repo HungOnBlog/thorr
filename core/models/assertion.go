@@ -8,9 +8,9 @@ import (
 )
 
 type Assertion struct {
-	On       string      `json:"on"`
-	Check    string      `json:"check"`
-	Expected interface{} `json:"expected"`
+	On       string      `json:"on" yaml:"on"`
+	Check    string      `json:"check" yaml:"check"`
+	Expected interface{} `json:"expected" yaml:"expected"`
 }
 
 func (a *Assertion) CheckAssertion(result Result) error {

@@ -1,0 +1,36 @@
+name: Test suit template
+description: Template for test suit
+type: integration
+default:
+  base_url: http://localhost:8080
+  headers:
+    Content-Type: application/json
+    apikey: 1234567890
+tests:
+  - name: Test name
+    description: Test description
+    request:
+      method: GET
+      path: /
+      headers:
+        apikey: 1234567890
+      queries:
+        query1: value1
+        query2: value2
+      body:
+        key1: value1
+        key2: value2
+    assertions:
+      - on: status
+        check: exact
+        expected: 200
+      - on: body
+        check: type
+        expected:
+          key1: string
+          key2: string
+      - on: headers
+        check: exist
+        expected:
+          - Content-Type: true
+          - apikey: true
