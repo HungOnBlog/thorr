@@ -132,6 +132,14 @@ func MapStringStringToMapStringInterface(m map[string]string) map[string]interfa
 	return newMap
 }
 
-func InterfaceToFloat64(value interface{}) float64 {
-	return value.(float64)
+func InterfaceToFloat64(value interface{}) (float64, error) {
+	return strconv.ParseFloat(value.(string), 64)
+}
+
+func InterfaceToInt(value interface{}) (int, error) {
+	return strconv.Atoi(value.(string))
+}
+
+func IntToFloat64(value int) float64 {
+	return float64(value)
 }

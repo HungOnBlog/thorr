@@ -287,7 +287,7 @@ You can find some examples in the [examples](./examples/) folder.
 
 ## Road map
 
-- [ ] Implement the integration test
+- [x] Implement the integration test (Only support JSON format)
 - [ ] Implement the load test
 - [ ] Support GET, POST, PUT, PATCH, DELETE methods
 - [ ] Add more assertions type (e.g. body contains, body not contains, body match regex, ...)

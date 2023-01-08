@@ -43,7 +43,16 @@ func (a *Assertion) checkStatusNot(status int, expected int) error {
 func (a *Assertion) checkStatus(result Result) error {
 	switch a.Check {
 	case "exact":
-		return a.checkStatusExact(result.Status, int(utils.InterfaceToFloat64(a.Expected)))
+		var num int
+		switch a.Expected.(type) {
+		case int:
+			num = a.Expected.(int)
+		case float64:
+			num = int(a.Expected.(float64))
+		case string:
+			num = utils.StringToInt(a.Expected.(string))
+		}
+		return a.checkStatusExact(result.Status, int(num))
 	case "not":
 		return a.checkStatusNot(result.Status, a.Expected.(int))
 	default:

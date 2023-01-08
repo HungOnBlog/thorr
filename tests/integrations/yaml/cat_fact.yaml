@@ -1,0 +1,19 @@
+name: Test suit for cat fact API
+description: This is a test suit for cat fact API
+default:
+  base_url: https://catfact.ninja
+tests:
+- name: Get random fact
+  description: Get random fact
+  request:
+    method: GET
+    path: "/fact"
+  assertions:
+  - 'on': status_code
+    check: exact
+    expected: 200
+  - 'on': body
+    check: type
+    expected:
+      fact: string::length::0-1000
+      length: float::range::0-1000
