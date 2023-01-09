@@ -194,6 +194,42 @@ The expected value is the value that you want to check. It can be a string, a nu
 }
 ```
 
+### Variable
+
+You can also define a local variable in the test. The variable can be used in
+other test requests, the variable will be in the test suit scope, mean that the
+when the variable is defined in a test, it can be used in other tests in the same (the variable will be override when the other test define the same variable). The variable will be define in `variables` field. **NOTE**: the variable field must be flat.
+
+To assign variable value use `$` operator.
+
+- `$.`: will get value from response body
+
+Example: `$.key` will get value from `key` in response body, and `$.key.key2` will get value from `key2` in `key` in response body.
+
+- `$`: will get value from test suit scope
+
+```json
+{
+  "tests": [
+    {
+      "name": "First test",
+      "request": "...",
+      "variables": {
+        "key": "$.key"
+      }
+    },
+    {
+      "name": "Second test",
+      "request": {
+        "headers": {
+          "key": "$key"
+        }
+      }
+    }
+  ]
+}
+```
+
 ## Example of a test suit definition
 
 ```json
