@@ -154,6 +154,10 @@ Array advanced type assertion:
 - **array::type::int**: Check the array contains only integer
 - **array::type::float**: Check the array contains only float
 - **array::type::boolean**: Check the array contains only boolean
+- **array::min::min**: Check the array contains at least min items (e.g. `array::min::1`)
+- **array::max::max**: Check the array contains at most max items (e.g. `array::max::10`)
+- **array::not_empty**: Check the array is not empty
+- **array::empty**: Check the array is empty
 
 ### Assertion `expected`
 
