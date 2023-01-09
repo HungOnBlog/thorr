@@ -69,9 +69,61 @@ func (t *TypeValidator) validateArray(command string, value string, actual inter
 	switch command {
 	case "type":
 		return t.validateArrayType(value, actual)
+	case "min":
+		return t.validateArrayMin(value, actual)
+	case "max":
+		return t.validateArrayMax(value, actual)
+	case "not_empty":
+		return t.validateArrayNotEmpty(actual)
+	case "empty":
+		return t.validateArrayEmpty(actual)
 	default:
 		return fmt.Errorf("command::%s is not supported", command)
 	}
+}
+
+// Validate array empty
+// Example: array::empty
+func (t *TypeValidator) validateArrayEmpty(actual interface{}) error {
+	if len(utils.InterfaceToArray(actual)) > 0 {
+		return fmt.Errorf("expected::array::empty, got::%v", actual)
+	}
+
+	return nil
+}
+
+// Validate array max
+// Example: array::max::5
+func (t *TypeValidator) validateArrayMax(value string, actual interface{}) error {
+	max := utils.StringToInt(value)
+
+	if len(utils.InterfaceToArray(actual)) > max {
+		return fmt.Errorf("expected::array::max::%d, got::%v", max, actual)
+	}
+
+	return nil
+}
+
+// Validate array min
+// Example: array::min::5
+func (t *TypeValidator) validateArrayMin(value string, actual interface{}) error {
+	min := utils.StringToInt(value)
+
+	if len(utils.InterfaceToArray(actual)) < min {
+		return fmt.Errorf("expected::array::min::%d, got::%v", min, actual)
+	}
+
+	return nil
+}
+
+// Validate array not empty
+// Example: array::not_empty
+func (t *TypeValidator) validateArrayNotEmpty(actual interface{}) error {
+	if len(utils.InterfaceToArray(actual)) == 0 {
+		return fmt.Errorf("expected::array::not_empty, got::%v", actual)
+	}
+
+	return nil
 }
 
 // Validate array type
