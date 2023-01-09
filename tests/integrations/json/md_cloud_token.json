@@ -11,7 +11,7 @@
   },
   "tests": [
     {
-      "name": "Test Get token",
+      "name": "Test Get /token",
       "description": "Test Get token",
       "request": {
         "method": "GET",

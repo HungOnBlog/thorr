@@ -11,7 +11,7 @@
   },
   "tests": [
     {
-      "name": "Test get APIKEY",
+      "name": "Test GET /apikey/:apikey",
       "description":"Test get APIKEY",
       "request": {
         "method": "GET",
@@ -24,7 +24,7 @@
           "expected": 200
         },
         {
-          "on": "body::array",
+          "on": "body",
           "check": "type",
           "expected": {
             "apikey": "string",
