@@ -16,7 +16,10 @@ func NewHttpRequester() *HttpRequester {
 	}
 }
 
-func (h *HttpRequester) requestBuilder(test models.Test) *req.Request {
+func (h *HttpRequester) requestBuilder(
+	test models.Test,
+	globalVariables *map[string]interface{},
+) *req.Request {
 	c := h.client.SetBaseURL(test.Request.BaseURL)
 	var r *req.Request
 
@@ -34,7 +37,12 @@ func (h *HttpRequester) requestBuilder(test models.Test) *req.Request {
 	}
 
 	if test.Request.Header != nil {
-		r.SetHeaders(utils.MapStringInterfaceToMapStringString(test.Request.Header))
+		r.SetHeaders(utils.MapStringInterfaceToMapStringString(
+			h.parseMapStringInterfaceWithGlobalVariables(
+				test.Request.Header,
+				globalVariables,
+			),
+		))
 	}
 
 	if test.Request.Query != nil {
@@ -48,8 +56,26 @@ func (h *HttpRequester) requestBuilder(test models.Test) *req.Request {
 	return r
 }
 
-func (h *HttpRequester) DoRequest(test models.Test) (models.Result, error) {
-	r := h.requestBuilder(test)
+func (h *HttpRequester) parseMapStringInterfaceWithGlobalVariables(
+	m map[string]interface{},
+	globalVariables *map[string]interface{},
+) map[string]interface{} {
+	rawMap := m
+	for k, v := range rawMap {
+		if utils.ContainerSubString(utils.InterfaceToString(v), "$") {
+			key := utils.InterfaceToString(v)[1:]
+			rawMap[k] = (*globalVariables)[key]
+		}
+	}
+
+	return rawMap
+}
+
+func (h *HttpRequester) DoRequest(
+	test models.Test,
+	globalVariables *map[string]interface{},
+) (models.Result, error) {
+	r := h.requestBuilder(test, globalVariables)
 	resp := r.Do()
 
 	status := resp.GetStatusCode()

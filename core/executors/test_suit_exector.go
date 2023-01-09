@@ -15,6 +15,7 @@ func NewTestSuitExecutor() *TestSuitExecutor {
 
 func (e *TestSuitExecutor) Execute(testSuit *models.TestSuit) error {
 	var errs []error
+	var globalVariables map[string]interface{} = make(map[string]interface{})
 	textExecutor := NewTestExecutor()
 	for _, test := range testSuit.Tests {
 		test.Request.BaseURL = testSuit.Default.BaseURL
@@ -23,7 +24,7 @@ func (e *TestSuitExecutor) Execute(testSuit *models.TestSuit) error {
 			utils.MapStringStringToMapStringInterface(testSuit.Default.Headers),
 		)
 
-		err := textExecutor.Execute(&test)
+		err := textExecutor.Execute(&test, &globalVariables)
 		if err != nil {
 			errs = append(errs, err)
 		}

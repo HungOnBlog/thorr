@@ -11,3 +11,12 @@ func UnmarshalJson(data []byte, v interface{}) error {
 func MarshalJson(v interface{}) ([]byte, error) {
 	return json.Marshal(v)
 }
+
+func GetVariableValue(
+	variable string,
+	body map[string]interface{},
+) interface{} {
+	keyWithoutDollarDot := variable[2:]
+	flatResult := Flatten(InterfaceToMapStringInterface(body))
+	return flatResult[keyWithoutDollarDot]
+}

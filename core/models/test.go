@@ -1,10 +1,11 @@
 package models
 
 type Test struct {
-	Name        string      `json:"name" yaml:"name"`
-	Description string      `json:"description" yaml:"description"`
-	Request     TestRequest `json:"request" yaml:"request"`
-	Assertions  []Assertion `json:"assertions" yaml:"assertions"`
+	Name        string                 `json:"name" yaml:"name"`
+	Description string                 `json:"description" yaml:"description"`
+	Request     TestRequest            `json:"request" yaml:"request"`
+	Assertions  []Assertion            `json:"assertions" yaml:"assertions"`
+	Variables   map[string]interface{} `json:"variables" yaml:"variables"`
 }
 
 type TestRequest struct {
