@@ -8,9 +8,10 @@ import (
 )
 
 type Assertion struct {
-	On       string      `json:"on" yaml:"on"`
-	Check    string      `json:"check" yaml:"check"`
-	Expected interface{} `json:"expected" yaml:"expected"`
+	On       string                 `json:"on" yaml:"on"`
+	Check    string                 `json:"check" yaml:"check"`
+	Expected interface{}            `json:"expected" yaml:"expected"`
+	At       map[string]interface{} `json:"@" yaml:"@"`
 }
 
 func (a *Assertion) CheckAssertion(result Result) error {
@@ -21,9 +22,55 @@ func (a *Assertion) CheckAssertion(result Result) error {
 		return a.checkBody(result)
 	case "header":
 		return a.checkHeader(result)
+	case "body::array":
+		return a.checkBodyArray(result)
 	default:
 		return fmt.Errorf("on::%s is no supported", a.On)
 	}
+}
+
+func (a *Assertion) checkBodyArray(result Result) error {
+	switch a.Check {
+	case "type":
+		return a.checkBodyArrayType(result.Body)
+	case "exist":
+		return a.checkBodyArrayExist(result.Body)
+	default:
+		return fmt.Errorf("on::body::array command::%s is no supported", a.Check)
+	}
+}
+
+func (a *Assertion) checkBodyArrayType(body interface{}) error {
+	expectedBodyType := a.Expected.(map[string]interface{})
+	expectedFlattenBody := utils.Flatten(expectedBodyType)
+	bodyArray := body.([]interface{})
+	var typeValidator validators.IValidator = validators.NewTypeValidator()
+	var errs []error
+
+	for _, body := range bodyArray {
+		bodyMap := body.(map[string]interface{})
+		flattenBody := utils.Flatten(bodyMap)
+		for key, expectedType := range expectedFlattenBody {
+			if _, ok := flattenBody[key]; !ok {
+				errs = append(errs, fmt.Errorf("on::body::array key::%s is not exist", key))
+				continue
+			}
+			err := typeValidator.Validate(expectedType, flattenBody[key])
+			if err != nil {
+				errs = append(errs, err)
+			}
+		}
+	}
+
+	if len(errs) > 0 {
+		return fmt.Errorf("on::body command::type %s", errs)
+	}
+
+	return nil
+}
+
+func (a *Assertion) checkBodyArrayExist(body interface{}) error {
+	return nil
 }
 
 func (a *Assertion) checkStatusExact(status int, expected int) error {
@@ -84,6 +131,24 @@ func (a *Assertion) checkBodyExact(body interface{}) error {
 	return nil
 }
 
+// Get value from At property
+// Replace the value part of the expected body with the value from At property
+// For example:
+// expected assertion: array::type::@children
+// At: {"children": "string"}
+// change to: array::type::string
+func (a *Assertion) getArrayTypeCheckValue(raw interface{}) interface{} {
+	rawString := utils.InterfaceToString(raw)
+	arr := utils.SplitBy(rawString, "::")
+	hasRef := len(arr) == 3 && utils.ContainerSubString(rawString, "@")
+	if hasRef {
+		arr2WithoutAt := utils.SplitBy(arr[2], "@")
+		return fmt.Sprintf("%s::%s::%s", arr[0], arr[1], a.At[arr2WithoutAt[1]])
+	}
+
+	return raw
+}
+
 func (a *Assertion) checkBodyType(body interface{}) error {
 	expectedBody := a.Expected.(map[string]interface{})
 	expectedFlattenBody := utils.Flatten(expectedBody)
@@ -92,6 +157,10 @@ func (a *Assertion) checkBodyType(body interface{}) error {
 	var errs []error
 
 	for k, v := range expectedFlattenBody {
+		isArrayTypeCheck := utils.ContainerSubString(utils.InterfaceToString(v), "array")
+		if isArrayTypeCheck {
+			v = a.getArrayTypeCheckValue(v)
+		}
 		err := typeValidator.Validate(v, actualFlattenBody[k])
 		if err != nil {
 			errs = append(errs, fmt.Errorf("key::%s %s ;", k, err.Error()))

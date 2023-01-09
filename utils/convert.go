@@ -16,13 +16,13 @@ func MapStringInterfaceToMapStringString(m map[string]interface{}) map[string]st
 	return newMap
 }
 
-func ReadCloserToMapStringInterface(r io.ReadCloser) (map[string]interface{}, error) {
+func ReadCloserToInterface(r io.ReadCloser) (interface{}, error) {
 	body, err := io.ReadAll(r)
 	if err != nil {
 		return nil, err
 	}
 
-	var data map[string]interface{}
+	var data interface{}
 	err = json.Unmarshal(body, &data)
 	if err != nil {
 		return nil, err
@@ -142,4 +142,16 @@ func InterfaceToInt(value interface{}) (int, error) {
 
 func IntToFloat64(value int) float64 {
 	return float64(value)
+}
+
+func InterfaceToArray(value interface{}) []interface{} {
+	return value.([]interface{})
+}
+
+func InterfaceToMapStringInterface(value interface{}) map[string]interface{} {
+	return value.(map[string]interface{})
+}
+
+func StringToByteArray(value string) []byte {
+	return []byte(value)
 }

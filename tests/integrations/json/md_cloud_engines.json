@@ -1,0 +1,42 @@
+{
+  "name": "MDCloud v5 Organization API suit",
+  "description": "MDCloud v5 Organization API suit",
+  "default": {
+    "base_url": "https://api.metadefender.local:9999/v5",
+    "headers": {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "apikey": "3d774dcf261286a3d7386ccddd83b2c8",
+      "token": "x0xc8vUcgTT+kA==79889902527d82df2bb2bf58e172aec1"
+    }
+  },
+  "tests": [
+    {
+      "name": "Test GET /engines",
+      "description": "Test GET /engines",
+      "request": {
+        "method": "GET",
+        "path": "/engines"
+      },
+      "assertions":[
+        {
+          "on": "status_code",
+          "check": "exact",
+          "expected": 200
+        },
+        {
+          "on": "body::array",
+          "check": "type",
+          "expected": {
+            "_id": "string",
+            "engine_id": "string",
+            "engine_name": "string",
+            "is_enable": "bool",
+            "created_date": "date::iso8601",
+            "updated_date": "date::iso8601"
+          }
+        }
+      ]
+    }
+  ]
+}

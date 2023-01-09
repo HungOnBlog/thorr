@@ -48,9 +48,127 @@ func (t *TypeValidator) Validate(expected interface{}, actual interface{}) error
 		return t.validateDate(command, value, actual)
 	case "time":
 		return t.validateTime(command, value, actual)
+	case "array":
+		return t.validateArray(command, value, actual)
 	default:
 		return fmt.Errorf("type::%s is not supported", expectedType)
 	}
+}
+
+// Validate array
+// Example: array::min::5
+func (t *TypeValidator) validateArray(command string, value string, actual interface{}) error {
+	if !utils.IsArray(actual) {
+		return fmt.Errorf("expected::array, got::%T", actual)
+	}
+
+	if command == "" {
+		return nil
+	}
+
+	switch command {
+	case "type":
+		return t.validateArrayType(value, actual)
+	default:
+		return fmt.Errorf("command::%s is not supported", command)
+	}
+}
+
+// Validate array type
+// Example: array::type::interface{}
+func (t *TypeValidator) validateArrayType(expected string, actual interface{}) error {
+	switch expected {
+	case "string":
+		return t.validateArrayString(actual)
+	case "int":
+		return t.validateArrayInt(actual)
+	case "float":
+		return t.validateArrayFloat(actual)
+	case "bool":
+		return t.validateArrayBool(actual)
+	default:
+		return t.validateComplexArray(expected, actual)
+	}
+}
+
+// Validate array bool
+// Example: array::type::bool
+func (t *TypeValidator) validateArrayBool(actual interface{}) error {
+	arr := utils.InterfaceToArray(actual)
+	for _, v := range arr {
+		if !utils.IsBool(v) {
+			return fmt.Errorf("expected::array::type::bool, got::%T", v)
+		}
+	}
+
+	return nil
+}
+
+// Validate array float
+// Example: array::type::float
+func (t *TypeValidator) validateArrayFloat(actual interface{}) error {
+	arr := utils.InterfaceToArray(actual)
+	for _, v := range arr {
+		if !utils.IsFloat(v) {
+			return fmt.Errorf("expected::array::type::float, got::%T", v)
+		}
+	}
+
+	return nil
+}
+
+// Validate array int
+// Example: array::type::int
+func (t *TypeValidator) validateArrayInt(actual interface{}) error {
+	arr := utils.InterfaceToArray(actual)
+	for _, v := range arr {
+		if !utils.IsInt(v) {
+			return fmt.Errorf("expected::array::type::int, got::%T", v)
+		}
+	}
+
+	return nil
+}
+
+// Validate array string
+// Example: array::type::string
+func (t *TypeValidator) validateArrayString(actual interface{}) error {
+	arr := utils.InterfaceToArray(actual)
+	for _, v := range arr {
+		if !utils.IsString(v) {
+			return fmt.Errorf("expected::array::type::string, got::%T", v)
+		}
+	}
+
+	return nil
+}
+
+// Validate complex array
+// Example: array::type::{"key":"string::uuid","value":"string::email"}
+func (t *TypeValidator) validateComplexArray(expected string, actual interface{}) error {
+	arr := utils.InterfaceToArray(actual)
+	var expectedJsonObj map[string]interface{}
+	err := utils.UnmarshalJson(utils.StringToByteArray(expected), &expectedJsonObj)
+	if err != nil {
+		return err
+	}
+
+	flattenExpected := utils.Flatten(expectedJsonObj)
+	for _, v := range arr {
+		flattenActual := utils.Flatten(utils.InterfaceToMapStringInterface(v))
+		for fek, fev := range flattenExpected {
+			if _, ok := flattenActual[fek]; !ok {
+				return fmt.Errorf("expected::%s, got::nil", fek)
+			}
+
+			err := t.Validate(fev, flattenActual[fek])
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
 }
 
 func (t *TypeValidator) validateString(command string, value string, actual interface{}) error {
@@ -401,6 +519,7 @@ func (t *TypeValidator) validateDateRange(value string, actual interface{}) erro
 func (t *TypeValidator) validateDateFormat(format string, actual interface{}) error {
 	_, err := utils.StringToDateWithFormat(utils.InterfaceToString(actual), format)
 	if err != nil {
+		fmt.Println(err)
 		return fmt.Errorf("expected::date::format::%v, got::%v", format, actual)
 	}
 

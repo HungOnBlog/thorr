@@ -57,7 +57,7 @@ func (h *HttpRequester) DoRequest(test models.Test) (models.Result, error) {
 	headers := utils.HttpHeaderToMapStringString(resp.Header)
 
 	body := resp.Body
-	returnBody, err := utils.ReadCloserToMapStringInterface(body)
+	returnBody, err := utils.ReadCloserToInterface(body)
 	if err != nil {
 		return models.Result{}, err
 	}

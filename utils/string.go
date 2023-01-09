@@ -10,3 +10,7 @@ func SplitBy(value string, separator string) []string {
 
 	return arr
 }
+
+func ContainerSubString(value string, subString string) bool {
+	return strings.Contains(value, subString)
+}

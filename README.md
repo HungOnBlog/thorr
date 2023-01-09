@@ -84,6 +84,7 @@ Assertions are the conditions that you want to check. It can be the status code,
 
 - **status_code**: Check the status code of the response
 - **body**: Check the body of the response
+- **body::array**: Check the body of the response is an array
 - **headers**: Check the headers of the response
 
 ### Assertion `check`
@@ -106,6 +107,7 @@ For assertion `type` Thorr will automatically flatten nested object so you can a
 - **boolean**: Check the value is a boolean
 - **date**: Check the value is a valid date, format: `YYYY-MM-DD`
 - **time**: Check the value is a valid time, format: `HH:mm:ss`
+- **array**: Check the value is an array
 
 ##### Advanced
 
@@ -288,6 +290,7 @@ You can find some examples in the [examples](./examples/) folder.
 ## Road map
 
 - [x] Implement the integration test (Only support JSON format)
+- [ ] Mechanism for reques
 - [ ] Implement the load test
 - [ ] Support GET, POST, PUT, PATCH, DELETE methods
 - [ ] Add more assertions type (e.g. body contains, body not contains, body match regex, ...)

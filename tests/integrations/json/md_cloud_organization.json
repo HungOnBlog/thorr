@@ -1,0 +1,54 @@
+{
+  "name": "MDCloud v5 Organization API suit",
+  "description": "MDCloud v5 Organization API suit",
+  "default": {
+    "base_url": "https://api.metadefender.local:9999/v5",
+    "headers": {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "apikey": "3d774dcf261286a3d7386ccddd83b2c8",
+      "token": "x0xc8vUcgTT+kA==79889902527d82df2bb2bf58e172aec1"
+    }
+  },
+  "tests": [
+    {
+      "name": "Test GET /organizations",
+      "description": "Test GET /organizations",
+      "request": {
+        "method": "GET",
+        "path": "/organizations/org1"
+      },
+      "assertions":[
+        {
+          "on": "status_code",
+          "check": "exact",
+          "expected": 200
+        },
+        {
+          "on": "body",
+          "check": "type",
+          "expected": {
+            "organization_id": "string",
+            "parent_organization_id": "string",
+            "limit_id": "string",
+            "children_organization_id": "array::type::string",
+            "ip_whitelist": "array",
+            "limit_information": {
+                "limit_prevention": "float",
+                "limit_reputation": "float",
+                "limit_sandbox": "float",
+                "limit_feed": "float",
+                "max_upload_file_size": "float",
+                "max_archive_file_number": "float",
+                "max_archive_file_size": "float",
+                "time_interval": "string"
+            }
+          },
+          "@": {
+            "children_organization_id": "string"
+          }
+        }
+      ]
+    }
+  ]
+}
