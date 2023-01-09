@@ -148,6 +148,13 @@ Time advanced type assertion:
 - **time::range::min to max**: Check the value is between min and max (e.g. `time::range::00:00:00 to 00:00:10`)
 - **time::format::format**: Check the value is in the format (e.g. `time::format::HH:mm:ss`)
 
+Array advanced type assertion:
+
+- **array::type::string**: Check the array contains only string
+- **array::type::int**: Check the array contains only integer
+- **array::type::float**: Check the array contains only float
+- **array::type::boolean**: Check the array contains only boolean
+
 ### Assertion `expected`
 
 The expected value is the value that you want to check. It can be a string, a number, a boolean, an object, ...
